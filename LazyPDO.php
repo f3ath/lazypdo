@@ -9,6 +9,7 @@ require_once(__DIR__ . DIRECTORY_SEPARATOR . '/PDODecorator.php');
  * @package
  * @version $id$
  * @author Alexey Karapetov <karapetov@gmail.com>
+ * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
 class F3_LazyPDO
     extends F3_PDODecorator

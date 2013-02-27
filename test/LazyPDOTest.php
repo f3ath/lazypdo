@@ -1,6 +1,15 @@
 <?php
 require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'LazyPDO.php');
 
+/**
+ * LazyPDOTest
+ *
+ * @package LazyPDO
+ * @version $id$
+ * @copyright Alexey Karapetov
+ * @author Alexey Karapetov <karapetov@gmail.com>
+ * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
+ */
 class LazyPDOTest
     extends PHPUnit_Framework_TestCase
 {

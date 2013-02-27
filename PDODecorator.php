@@ -2,8 +2,11 @@
 /**
  * PDO decorator, redirect calls to PDO methods
  *
- * @package
+ * @package LazyPDO
  * @version $id$
+ * @copyright Alexey Karapetov
+ * @author Alexey Karapetov <karapetov@gmail.com>
+ * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
 abstract class F3_PDODecorator
     extends PDO
