@@ -1,8 +1,8 @@
 <?php
-use PDO, Serializable;
+require_once(__DIR__ . DIRECTORY_SEPARATOR . '/PDODecorator.php');
 
 /**
- * LazyPDO does not call parent::__construct() unless it explicitly called via init()
+ * LazyPDO does not instanciate real PDO until it is really needed
  *
  * Also it can be (un)serialized
  *
@@ -10,8 +10,8 @@ use PDO, Serializable;
  * @version $id$
  * @author Alexey Karapetov <karapetov@gmail.com>
  */
-class LazyPDO
-    extends PDO
+class F3_LazyPDO
+    extends F3_PDODecorator
     implements Serializable
 {
     private $dsn;
@@ -19,7 +19,7 @@ class LazyPDO
     private $password;
     private $options = array();
 
-    private $suspended = true;
+    private $pdo = null;
 
     /**
      * __construct
@@ -38,17 +38,28 @@ class LazyPDO
     }
 
     /**
-     * call parent::__construct()
+     * Get PDO object. Cache the result
      *
-     * @return void
+     * @return PDO
      */
-    private function init()
+    protected function getPDO()
     {
-        if ($this->suspended)
+        if (NULL === $this->pdo)
         {
-            parent::__construct($this->dsn, $this->user, $this->password, $this->options);
-            $this->suspended = false;
+            $this->pdo = new PDO($this->dsn, $this->user, $this->password, $this->options);
         }
+        return $this->pdo;
+    }
+
+    /**
+     * Checks if inside a transaction
+     *
+     * @return bool
+     */
+    public function inTransaction()
+    {
+        // Do not call parent method if there is no pdo object
+        return $this->pdo && parent::inTransaction();
     }
 
     /**
@@ -58,6 +69,10 @@ class LazyPDO
      */
     public function serialize()
     {
+        if ($this->inTransaction())
+        {
+            throw new RuntimeException('Can not serialize in transaction');
+        }
         return serialize(array(
             $this->dsn,
             $this->user,
@@ -80,165 +95,17 @@ class LazyPDO
     /**
      * setAttribute
      *
-     * @param int $attr
+     * @param int $attribute
      * @param mixed $value
      * @return boolean
      */
-    public function setAttribute($attr, $value)
+    public function setAttribute($attribute, $value)
     {
-        $this->init();
-        $result = parent::setAttribute($attr, $value);
-        if ($result)
+        if (parent::setAttribute($attribute, $value))
         {
-            $this->options[$attr] = $value;
+            $this->options[$attribute] = $value;
+            return true;
         }
-        return $result;
-    }
-
-    /**
-     * getAttribute
-     *
-     * @param int $attr
-     * @return mixed
-     */
-    public function getAttribute($attr)
-    {
-        $this->init();
-        return parent::getAttribute($attr);
-    }
-
-    /**
-     * inTransaction
-     *
-     * @return boolean
-     */
-    public function inTransaction()
-    {
-        $this->init();
-        return (boolean) parent::inTransaction();
-    }
-
-    /**
-     * beginTransaction
-     *
-     * @return boolean
-     */
-    public function beginTransaction()
-    {
-        $this->init();
-        return (boolean) parent::beginTransaction();
-    }
-
-    /**
-     * commit
-     *
-     * @return boolean
-     */
-    public function commit()
-    {
-        $this->init();
-        return parent::commit();
-    }
-
-    /**
-     * rollBack
-     *
-     * @return boolean
-     */
-    public function rollBack()
-    {
-        $this-> init();
-        return parent::rollBack();
-    }
-
-    /**
-     * errorCode
-     *
-     * @return mixed
-     */
-    public function errorCode()
-    {
-        $this->init();
-        return parent::errorCode();
-    }
-
-    /**
-     * errorInfo
-     *
-     * @return array
-     */
-    public function errorInfo()
-    {
-        $this->init();
-        return parent::errorInfo();
-    }
-
-    /**
-     * exec
-     *
-     * @param string $statement
-     * @return int
-     */
-    public function exec($statement)
-    {
-        $this->init();
-        return parent::exec($statement);
-    }
-
-    /**
-     * prepare
-     *
-     * @param string $statement
-     * @param array $options
-     * @return PDOStatement
-     */
-    public function prepare($statement, $options = array())
-    {
-        $this->init();
-        return parent::prepare($statement, $options);
-    }
-
-    /**
-     * quote
-     *
-     * @param string $string
-     * @param int $type
-     * @return string
-     */
-    public function quote($string, $type = PDO::PARAM_STR)
-    {
-        $this->init();
-        return parent::quote($string, $type);
-    }
-
-    /**
-     * lastInsertId
-     *
-     * @param string $name
-     * @return string
-     */
-    public function lastInsertId($name = null)
-    {
-        $this->init();
-        return parent::lastInsertId($name);
-    }
-
-    /**
-     * query
-     * overloading supported
-     *
-     * @param string $statement
-     * @return PDOStatement
-     */
-    public function query($statement)
-    {
-        $this->init();
-        if (1 == func_num_args())
-        {
-            return parent::query($statement);
-        }
-        // this is much slower but supports overloading
-        // http://php.net/manual/en/pdo.query.php
-        return call_user_func_array(array('parent', __FUNCTION__), func_get_args());
+        return false;
     }
 }
