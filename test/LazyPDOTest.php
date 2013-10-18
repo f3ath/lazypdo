@@ -1,6 +1,4 @@
 <?php
-require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'LazyPDO.php');
-
 /**
  * LazyPDOTest
  *
@@ -34,7 +32,7 @@ class LazyPDOTest
             'query',
             'lastInsertId',
         ));
-        $this->lazy = $this->getMock('F3_LazyPDO', array('getPDO'), array('dsn', 'user', 'pass', array('key' => 'val')));
+        $this->lazy = $this->getMock('F3\\LazyPDO\\LazyPDO', array('getPDO'), array('dsn', 'user', 'pass', array('key' => 'val')));
         $this->lazy->expects($this->any())
             ->method('getPDO')
             ->will($this->returnValue($this->pdo));
@@ -99,18 +97,16 @@ class LazyPDOTest
 
     public function testGetPDO()
     {
-        $class = new ReflectionClass('F3_LazyPDO');
+        $class = new ReflectionClass('F3\\LazyPDO\\LazyPDO');
         $method = $class->getMethod('getPDO');
         $method->setAccessible(true);
 
-        $file = tempnam(sys_get_temp_dir(), 'php');
-        $dsn = 'sqlite:' . $file;
-        $lazy = new F3_LazyPDO($dsn, 'user', 'pass', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+        $dsn = 'sqlite::memory:';
+        $lazy = new F3\LazyPDO\LazyPDO($dsn, 'user', 'pass', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
         $pdo = $method->invoke($lazy);
         $this->assertInstanceOf('PDO', $pdo);
         $this->assertThat($pdo, $this->identicalTo($method->invoke($lazy)));
         $this->assertEquals(PDO::ERRMODE_EXCEPTION, $pdo->getAttribute(PDO::ATTR_ERRMODE));
-		unlink($file);
     }
 
     /**
@@ -120,7 +116,7 @@ class LazyPDOTest
     public function testSerializeShouldThrowExceptionInTransaction()
     {
         $lazy = $this->getMock(
-            'F3_LazyPDO',
+            'F3\\LazyPDO\\LazyPDO',
             array('inTransaction'),
             array('dsn', 'user', 'pass', array())
         );
@@ -132,25 +128,21 @@ class LazyPDOTest
 
     public function testSerialize()
     {
-        $file = tempnam(sys_get_temp_dir(), 'php');
-        $dsn = 'sqlite:' . $file;
-        $lazy = new F3_LazyPDO($dsn, 'user', 'pass');
+        $dsn = 'sqlite::memory:';
+        $lazy = new F3\LazyPDO\LazyPDO($dsn, 'user', 'pass');
         $serialized = serialize($lazy);
-        $this->assertEquals('C:10:"F3_LazyPDO":79:{a:4:{i:0;s:' . mb_strlen($dsn) . ':"' . $dsn . '";i:1;s:4:"user";i:2;s:4:"pass";i:3;a:0:{}}}', $serialized);
+        $this->assertEquals('C:18:"F3\\LazyPDO\\LazyPDO":73:{a:4:{i:0;s:' . mb_strlen($dsn) . ':"' . $dsn . '";i:1;s:4:"user";i:2;s:4:"pass";i:3;a:0:{}}}', $serialized);
         $this->assertEquals($lazy, unserialize($serialized));
-		unlink($file);
     }
 
     public function testSerializationShouldPreserveAttributes()
     {
-        $file = tempnam(sys_get_temp_dir(), 'php');
-        $dsn = 'sqlite:' . $file;
-        $lazy = new F3_LazyPDO($dsn, 'user', 'pass', array());
+        $dsn = 'sqlite::memory:';
+        $lazy = new F3\LazyPDO\LazyPDO($dsn, 'user', 'pass', array());
         $this->assertNotEquals(PDO::ERRMODE_EXCEPTION, $lazy->getAttribute(PDO::ATTR_ERRMODE));
         $lazy->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->assertEquals(PDO::ERRMODE_EXCEPTION, $lazy->getAttribute(PDO::ATTR_ERRMODE));
         $lazy = unserialize(serialize($lazy));
         $this->assertEquals(PDO::ERRMODE_EXCEPTION, $lazy->getAttribute(PDO::ATTR_ERRMODE));
-		unlink($file);
     }
 }

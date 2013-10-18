@@ -1,8 +1,6 @@
 <?php
-require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'PDODecorator.php');
-
 /**
- * F3_PDODecoratorTest
+ * PDODecoratorTest
  *
  * @package LazyPDO
  * @version $id$
@@ -10,7 +8,7 @@ require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'PDODecorator.php');
  * @author Alexey Karapetov <karapetov@gmail.com>
  * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
-class F3_PDODecoratorTest
+class PDODecoratorTest
     extends PHPUnit_Framework_TestCase
 {
     protected $pdoDecorator;
@@ -35,7 +33,7 @@ class F3_PDODecoratorTest
             'lastInsertId',
         ));
 
-        $this->pdoDecorator = $this->getMockForAbstractClass('F3_PDODecorator');
+        $this->pdoDecorator = $this->getMockForAbstractClass('F3\\LazyPDO\\PDODecorator');
 
         $this->pdoDecorator->expects($this->any())
             ->method('getPDO')
@@ -163,16 +161,25 @@ class F3_PDODecoratorTest
         $this->assertThat($this->pdoDecorator->exec('testStatement'), $this->identicalTo($testValue));
     }
 
+    public function testQuote()
+    {
+        $testParameter = 'testParameter';
+        $testType = 'testType';
+        $this->pdoStub->expects($this->once())
+            ->method('quote')
+            ->with($testParameter, $testType);
+
+        $this->pdoDecorator->quote($testParameter, $testType);
+    }
+
     public function testQuoteWithUnspecifiedType()
     {
-        $testResult = 'testResult';
         $testParameter = 'testParameter';
         $this->pdoStub->expects($this->once())
             ->method('quote')
-            ->with($testParameter)
-            ->will($this->returnValue($testResult));
+            ->with($testParameter, PDO::PARAM_STR);
 
-        $this->assertThat($this->pdoDecorator->quote($testParameter), $this->identicalTo($testResult));
+        $this->pdoDecorator->quote($testParameter);
     }
 
     public function testLastInsertIdWithUnspecifiedName()

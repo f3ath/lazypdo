@@ -1,4 +1,8 @@
 <?php
+namespace F3\LazyPDO;
+
+use PDO;
+
 /**
  * PDO decorator, redirect calls to PDO methods
  *
@@ -8,7 +12,7 @@
  * @author Alexey Karapetov <karapetov@gmail.com>
  * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
-abstract class F3_PDODecorator
+abstract class PDODecorator
     extends PDO
 {
     /**
@@ -137,12 +141,8 @@ abstract class F3_PDODecorator
      * @param int $type
      * @return string
      */
-    public function quote($string, $type = NULL)
+    public function quote($string, $type = PDO::PARAM_STR)
     {
-        if (1 == func_num_args())
-		{
-			return $this->getPDO()->quote($string);
-		}
 		return $this->getPDO()->quote($string, $type);
     }
 
