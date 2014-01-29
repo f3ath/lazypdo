@@ -12,8 +12,7 @@ use PDO;
  * @author Alexey Karapetov <karapetov@gmail.com>
  * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
-abstract class PDODecorator
-    extends PDO
+abstract class PDODecorator extends PDO
 {
     /**
      * Get the PDO object
@@ -23,8 +22,8 @@ abstract class PDODecorator
     abstract protected function getPDO();
 
     /**
-	 * Empty default constructor. Redefined the PDO's native one
-	 * to prevent instantiating the PDO.
+     * Empty default constructor. Redefined the PDO's native one
+     * to prevent instantiating the PDO.
      */
     public function __construct() { }
 
@@ -143,7 +142,7 @@ abstract class PDODecorator
      */
     public function quote($string, $type = PDO::PARAM_STR)
     {
-		return $this->getPDO()->quote($string, $type);
+        return $this->getPDO()->quote($string, $type);
     }
 
     /**
@@ -158,16 +157,15 @@ abstract class PDODecorator
     }
 
     /**
-     * Executes an SQL statement, returning a result set as a PDOStatement object
-     * overloading supported
+     * Executes an SQL statement, returning a result set as a PDOStatement object,
+     * overloading is supported
      *
      * @param string $statement
      * @return PDOStatement
      */
     public function query($statement)
     {
-        if (1 == func_num_args())
-        {
+        if (1 == func_num_args()) {
             return $this->getPDO()->query($statement);
         }
         // this way is much slower but supports overloading

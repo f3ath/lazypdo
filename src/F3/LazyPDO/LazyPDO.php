@@ -48,8 +48,7 @@ class LazyPDO extends PDODecorator
      */
     protected function getPDO()
     {
-        if (NULL === $this->pdo)
-        {
+        if (null === $this->pdo) {
             $this->pdo = new PDO($this->dsn, $this->user, $this->password, $this->options);
         }
         return $this->pdo;
@@ -73,8 +72,7 @@ class LazyPDO extends PDODecorator
      */
     public function serialize()
     {
-        if ($this->inTransaction())
-        {
+        if ($this->inTransaction()) {
             throw new RuntimeException('Can not serialize in transaction');
         }
         return serialize(array(
@@ -105,8 +103,7 @@ class LazyPDO extends PDODecorator
      */
     public function setAttribute($attribute, $value)
     {
-        if (parent::setAttribute($attribute, $value))
-        {
+        if (parent::setAttribute($attribute, $value)) {
             $this->options[$attribute] = $value;
             return true;
         }
