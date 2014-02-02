@@ -10,7 +10,6 @@ use RuntimeException;
  *
  * Also it can be (un)serialized
  *
- * @package
  * @version $id$
  * @author Alexey Karapetov <karapetov@gmail.com>
  * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
