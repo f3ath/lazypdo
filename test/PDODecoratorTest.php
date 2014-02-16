@@ -1,4 +1,8 @@
 <?php
+namespace F3\LazyPDO;
+
+use PDO;
+
 /**
  * PDODecoratorTest
  *
@@ -8,8 +12,7 @@
  * @author Alexey Karapetov <karapetov@gmail.com>
  * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
-class PDODecoratorTest
-    extends PHPUnit_Framework_TestCase
+class PDODecoratorTest extends \PHPUnit_Framework_TestCase
 {
     protected $pdoDecorator;
 

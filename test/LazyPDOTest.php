@@ -1,4 +1,9 @@
 <?php
+namespace F3\LazyPDO;
+
+use PDO;
+use ReflectionClass;
+
 /**
  * LazyPDOTest
  *
@@ -8,8 +13,7 @@
  * @author Alexey Karapetov <karapetov@gmail.com>
  * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
-class LazyPDOTest
-    extends PHPUnit_Framework_TestCase
+class LazyPDOTest extends \PHPUnit_Framework_TestCase
 {
     private $pdo;
 
@@ -36,10 +40,6 @@ class LazyPDOTest
         $this->lazy->expects($this->any())
             ->method('getPDO')
             ->will($this->returnValue($this->pdo));
-    }
-
-    protected function tearDown()
-    {
     }
 
     public function booleanValuesProvider()
@@ -102,7 +102,7 @@ class LazyPDOTest
         $method->setAccessible(true);
 
         $dsn = 'sqlite::memory:';
-        $lazy = new F3\LazyPDO\LazyPDO($dsn, 'user', 'pass', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+        $lazy = new LazyPDO($dsn, 'user', 'pass', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
         $pdo = $method->invoke($lazy);
         $this->assertInstanceOf('PDO', $pdo);
         $this->assertThat($pdo, $this->identicalTo($method->invoke($lazy)));
@@ -129,7 +129,7 @@ class LazyPDOTest
     public function testSerialize()
     {
         $dsn = 'sqlite::memory:';
-        $lazy = new F3\LazyPDO\LazyPDO($dsn, 'user', 'pass');
+        $lazy = new LazyPDO($dsn, 'user', 'pass');
         $serialized = serialize($lazy);
         $this->assertEquals('C:18:"F3\\LazyPDO\\LazyPDO":73:{a:4:{i:0;s:' . mb_strlen($dsn) . ':"' . $dsn . '";i:1;s:4:"user";i:2;s:4:"pass";i:3;a:0:{}}}', $serialized);
         $this->assertEquals($lazy, unserialize($serialized));
@@ -138,7 +138,7 @@ class LazyPDOTest
     public function testSerializationShouldPreserveAttributes()
     {
         $dsn = 'sqlite::memory:';
-        $lazy = new F3\LazyPDO\LazyPDO($dsn, 'user', 'pass', array());
+        $lazy = new LazyPDO($dsn, 'user', 'pass', array());
         $this->assertNotEquals(PDO::ERRMODE_EXCEPTION, $lazy->getAttribute(PDO::ATTR_ERRMODE));
         $lazy->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->assertEquals(PDO::ERRMODE_EXCEPTION, $lazy->getAttribute(PDO::ATTR_ERRMODE));
