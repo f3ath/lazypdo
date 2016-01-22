@@ -6,7 +6,7 @@ use PDO;
 use RuntimeException;
 
 /**
- * LazyPDO does not instanciate real PDO until it is really needed
+ * LazyPDO does not instantiate real PDO until it is really needed
  *
  * Also it can be (un)serialized
  *
@@ -14,8 +14,7 @@ use RuntimeException;
  * @author Alexey Karapetov <karapetov@gmail.com>
  * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
-class LazyPDO extends PDODecorator
-    implements Serializable
+class LazyPDO extends PDODecorator implements Serializable
 {
     private $dsn;
     private $user;

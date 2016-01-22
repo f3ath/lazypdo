@@ -3,6 +3,7 @@ namespace F3\LazyPDO;
 
 use PDO;
 use ReflectionClass;
+use RuntimeException;
 
 /**
  * LazyPDOTest
@@ -97,6 +98,9 @@ class LazyPDOTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPDO()
     {
+        if (false === extension_loaded('pdo_sqlite')) {
+            $this->markTestSkipped('pdo_sqlite not loaded');
+        }
         $class = new ReflectionClass('F3\\LazyPDO\\LazyPDO');
         $method = $class->getMethod('getPDO');
         $method->setAccessible(true);
@@ -137,6 +141,9 @@ class LazyPDOTest extends \PHPUnit_Framework_TestCase
 
     public function testSerializationShouldPreserveAttributes()
     {
+        if (false === extension_loaded('pdo_sqlite')) {
+            $this->markTestSkipped('pdo_sqlite not loaded');
+        }
         $dsn = 'sqlite::memory:';
         $lazy = new LazyPDO($dsn, 'user', 'pass', array());
         $this->assertNotEquals(PDO::ERRMODE_EXCEPTION, $lazy->getAttribute(PDO::ATTR_ERRMODE));
