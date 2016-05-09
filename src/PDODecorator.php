@@ -126,7 +126,7 @@ abstract class PDODecorator extends PDO
      *
      * @param string $statement
      * @param array $options
-     * @return PDOStatement
+     * @return \PDOStatement
      */
     public function prepare($statement, $options = array())
     {
