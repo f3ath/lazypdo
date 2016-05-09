@@ -17,7 +17,7 @@ abstract class PDODecorator extends PDO
     /**
      * Get the PDO object
      *
-     * @return PDO
+     * @return \PDO
      */
     abstract protected function getPDO();
 
@@ -161,7 +161,7 @@ abstract class PDODecorator extends PDO
      * overloading is supported
      *
      * @param string $statement
-     * @return PDOStatement
+     * @return \PDOStatement
      */
     public function query($statement)
     {
