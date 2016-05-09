@@ -1,8 +1,6 @@
 <?php
 namespace F3\LazyPDO;
 
-use PDO;
-
 /**
  * PDO decorator, redirect calls to PDO methods
  *
@@ -12,7 +10,7 @@ use PDO;
  * @author Alexey Karapetov <karapetov@gmail.com>
  * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
-abstract class PDODecorator extends PDO
+abstract class PDODecorator extends \PDO
 {
     /**
      * Get the PDO object
@@ -140,7 +138,7 @@ abstract class PDODecorator extends PDO
      * @param int $type
      * @return string
      */
-    public function quote($string, $type = PDO::PARAM_STR)
+    public function quote($string, $type = \PDO::PARAM_STR)
     {
         return $this->getPDO()->quote($string, $type);
     }
@@ -151,7 +149,7 @@ abstract class PDODecorator extends PDO
      * @param string $name
      * @return string
      */
-    public function lastInsertId($name = NULL)
+    public function lastInsertId($name = null)
     {
         return $this->getPDO()->lastInsertId($name);
     }
