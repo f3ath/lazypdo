@@ -1,10 +1,6 @@
 <?php
 namespace F3\LazyPDO;
 
-use Serializable;
-use PDO;
-use RuntimeException;
-
 /**
  * LazyPDO does not instantiate real PDO until it is really needed
  *
@@ -14,7 +10,7 @@ use RuntimeException;
  * @author Alexey Karapetov <karapetov@gmail.com>
  * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
-class LazyPDO extends PDODecorator implements Serializable
+class LazyPDO extends PDODecorator implements \Serializable
 {
     private $dsn;
     private $user;
@@ -42,12 +38,12 @@ class LazyPDO extends PDODecorator implements Serializable
     /**
      * Get PDO object. Cache the result
      *
-     * @return PDO
+     * @return \PDO
      */
     protected function getPDO()
     {
         if (null === $this->pdo) {
-            $this->pdo = new PDO($this->dsn, $this->user, $this->password, $this->options);
+            $this->pdo = new \PDO($this->dsn, $this->user, $this->password, $this->options);
         }
         return $this->pdo;
     }
@@ -71,7 +67,7 @@ class LazyPDO extends PDODecorator implements Serializable
     public function serialize()
     {
         if ($this->inTransaction()) {
-            throw new RuntimeException('Can not serialize in transaction');
+            throw new \RuntimeException('Can not serialize in transaction');
         }
         return serialize(array(
             $this->dsn,
