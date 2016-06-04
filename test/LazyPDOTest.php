@@ -8,11 +8,11 @@ use RuntimeException;
 /**
  * LazyPDOTest
  *
- * @package LazyPDO
- * @version $id$
+ * @package   LazyPDO
+ * @version   $id$
  * @copyright Alexey Karapetov
- * @author Alexey Karapetov <karapetov@gmail.com>
- * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
+ * @author    Alexey Karapetov <karapetov@gmail.com>
+ * @license   http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
 class LazyPDOTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,22 +22,27 @@ class LazyPDOTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->pdo = $this->getMock('stdClass', array(
-            'setAttribute',
-            'inTransaction',
-            'beginTransaction',
-            'getAttribute',
-            'commit',
-            'rollBack',
-            'errorCode',
-            'errorInfo',
-            'exec',
-            'prepare',
-            'quote',
-            'query',
-            'lastInsertId',
-        ));
-        $this->lazy = $this->getMock('F3\\LazyPDO\\LazyPDO', array('getPDO'), array('dsn', 'user', 'pass', array('key' => 'val')));
+        $this->pdo = $this->getMockBuilder('stdClass')
+            ->setMethods(array(
+                'setAttribute',
+                'inTransaction',
+                'beginTransaction',
+                'getAttribute',
+                'commit',
+                'rollBack',
+                'errorCode',
+                'errorInfo',
+                'exec',
+                'prepare',
+                'quote',
+                'query',
+                'lastInsertId',
+            ))
+            ->getMock();
+        $this->lazy = $this->getMockBuilder('F3\\LazyPDO\\LazyPDO')
+            ->setMethods(array('getPDO'))
+            ->setConstructorArgs(array('dsn', 'user', 'pass', array('key' => 'val')))
+            ->getMock();
         $this->lazy->expects($this->any())
             ->method('getPDO')
             ->will($this->returnValue($this->pdo));
@@ -66,6 +71,7 @@ class LazyPDOTest extends \PHPUnit_Framework_TestCase
             array(null, null),
         );
     }
+
     public function intOrNullValuesProvider()
     {
         return array_merge(
