@@ -1,0 +1,14 @@
+# Change Log
+This project adheres to [Semantic Versioning](http://semver.org/).
+
+## [Unreleased]
+### Added
+- zh-CN and zh-TW translations from @tianshuo.
+- de translation from @mpbzh.
+
+## [0.1.0] - 2016-06-03
+### Added
+- PDOStatementDecorator
+
+### Changed
+- calls to `getMock()` replaced with `getMockBuilder()` due to deprecation
