@@ -35,7 +35,8 @@ class PDODecoratorTest extends \PHPUnit_Framework_TestCase
                 'quote',
                 'query',
                 'lastInsertId',
-            ));
+            ))
+            ->getMock();
 
         $this->pdoDecorator = $this->getMockForAbstractClass('F3\\LazyPDO\\PDODecorator');
 

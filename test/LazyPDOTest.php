@@ -127,9 +127,8 @@ class LazyPDOTest extends \PHPUnit_Framework_TestCase
     {
         $lazy = $this->getMockBuilder('F3\\LazyPDO\\LazyPDO')
             ->setConstructorArgs(array('dsn', 'user', 'pass', array()))
-            ->setMethods(array('inTransaction'));
-            
-        );
+            ->setMethods(array('inTransaction'))
+            ->getMock();
         $lazy->expects($this->once())
             ->method('inTransaction')
             ->will($this->returnValue(true));
