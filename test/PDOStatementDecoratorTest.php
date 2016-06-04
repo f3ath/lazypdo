@@ -1,16 +1,19 @@
 <?php
 namespace F3\LazyPDO;
 
+use PDO;
+use PDOStatement;
+use PHPUnit_Framework_MockObject_MockObject;
 
 class PDOStatementDecoratorTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \PDOStatement
+     * @var PDOStatement
      */
     protected $pdoStatementDecorator;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var PHPUnit_Framework_MockObject_MockObject
      */
     protected $pdoStatementStub;
 
@@ -47,6 +50,28 @@ class PDOStatementDecoratorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->pdoStatementStub));
     }
 
+    public function testBindParam()
+    {
+        $this->pdoStatementStub->expects($this->once())
+            ->method('bindParam')
+            ->with(1, 2, 3, 4, 5)
+            ->willReturn(42);
+
+        $var = 2;
+        $this->assertEquals(42, $this->pdoStatementDecorator->bindParam(1, $var, 3, 4, 5));
+    }
+
+    public function testBindColumn()
+    {
+        $this->pdoStatementStub->expects($this->once())
+            ->method('bindColumn')
+            ->with(1, 2, 3, 4, 5)
+            ->willReturn(42);
+
+        $var = 2;
+        $this->assertEquals(42, $this->pdoStatementDecorator->bindColumn(1, $var, 3, 4, 5));
+    }
+
     public function methods()
     {
         return array(
@@ -70,30 +95,6 @@ class PDOStatementDecoratorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-
-    public function testBindParam()
-    {
-        $this->pdoStatementStub->expects($this->once())
-            ->method('bindParam')
-            ->with(1, 2, 3, 4, 5)
-            ->willReturn(42);
-
-        $var = 2;
-        $this->assertEquals(42, $this->pdoStatementDecorator->bindParam(1, $var, 3, 4, 5));
-    }
-
-    public function testBindColumn()
-    {
-        $this->pdoStatementStub->expects($this->once())
-            ->method('bindColumn')
-            ->with(1, 2, 3, 4, 5)
-            ->willReturn(42);
-
-        $var = 2;
-        $this->assertEquals(42, $this->pdoStatementDecorator->bindColumn(1, $var, 3, 4, 5));
-    }
-
-
     /**
      * @dataProvider methods
      * @param       $methodName
@@ -107,5 +108,17 @@ class PDOStatementDecoratorTest extends \PHPUnit_Framework_TestCase
         $method->willReturn(42);
 
         $this->assertEquals(42, call_user_func_array(array($this->pdoStatementDecorator, $methodName), $params));
+    }
+
+    public function testGetQueryString()
+    {
+        if (false === extension_loaded('pdo_sqlite')) {
+            $this->markTestSkipped('pdo_sqlite not loaded');
+        }
+
+        $pdo = new PDO('sqlite::memory:', null, null, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+        $select = $pdo->prepare('SELECT 42');
+        $wrapped = new SimplePDOStatementDecorator($select);
+        $this->assertEquals('SELECT 42', $wrapped->getQueryString());
     }
 }
