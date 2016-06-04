@@ -1,6 +1,10 @@
 # Change Log
 LazyPDO change log.
 
+## [0.1.1] - 2016-06-03
+### Added
+- PDOStatementDecorator::getQueryString() accessor
+
 ## [0.1.0] - 2016-06-03
 ### Added
 - PDOStatementDecorator
