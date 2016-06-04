@@ -20,21 +20,22 @@ class PDODecoratorTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->pdoStub = $this->getMock('stdClass', array(
-            'setAttribute',
-            'inTransaction',
-            'beginTransaction',
-            'getAttribute',
-            'commit',
-            'rollBack',
-            'errorCode',
-            'errorInfo',
-            'exec',
-            'prepare',
-            'quote',
-            'query',
-            'lastInsertId',
-        ));
+        $this->pdoStub = $this->getMockBuilder('stdClass')
+            ->setMethods(array(
+                'setAttribute',
+                'inTransaction',
+                'beginTransaction',
+                'getAttribute',
+                'commit',
+                'rollBack',
+                'errorCode',
+                'errorInfo',
+                'exec',
+                'prepare',
+                'quote',
+                'query',
+                'lastInsertId',
+            ));
 
         $this->pdoDecorator = $this->getMockForAbstractClass('F3\\LazyPDO\\PDODecorator');
 

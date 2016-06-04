@@ -125,10 +125,10 @@ class LazyPDOTest extends \PHPUnit_Framework_TestCase
      */
     public function testSerializeShouldThrowExceptionInTransaction()
     {
-        $lazy = $this->getMock(
-            'F3\\LazyPDO\\LazyPDO',
-            array('inTransaction'),
-            array('dsn', 'user', 'pass', array())
+        $lazy = $this->getMockBuilder('F3\\LazyPDO\\LazyPDO')
+            ->setConstructorArgs(array('dsn', 'user', 'pass', array()))
+            ->setMethods(array('inTransaction'));
+            
         );
         $lazy->expects($this->once())
             ->method('inTransaction')
