@@ -1,6 +1,9 @@
 <?php
 namespace F3\LazyPDO;
 
+use PDO;
+use PDOStatement;
+
 /**
  * PDO decorator, redirect calls to PDO methods
  *
@@ -10,12 +13,12 @@ namespace F3\LazyPDO;
  * @author Alexey Karapetov <karapetov@gmail.com>
  * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
-abstract class PDODecorator extends \PDO
+abstract class PDODecorator extends PDO
 {
     /**
      * Get the PDO object
      *
-     * @return \PDO
+     * @return PDO
      */
     abstract protected function getPDO();
 
@@ -124,7 +127,7 @@ abstract class PDODecorator extends \PDO
      *
      * @param string $statement
      * @param array $options
-     * @return \PDOStatement
+     * @return PDOStatement
      */
     public function prepare($statement, $options = array())
     {
@@ -138,7 +141,7 @@ abstract class PDODecorator extends \PDO
      * @param int $type
      * @return string
      */
-    public function quote($string, $type = \PDO::PARAM_STR)
+    public function quote($string, $type = PDO::PARAM_STR)
     {
         return $this->getPDO()->quote($string, $type);
     }
@@ -159,7 +162,7 @@ abstract class PDODecorator extends \PDO
      * overloading is supported
      *
      * @param string $statement
-     * @return \PDOStatement
+     * @return PDOStatement
      */
     public function query($statement)
     {
