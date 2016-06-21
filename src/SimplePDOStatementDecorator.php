@@ -22,7 +22,7 @@ class SimplePDOStatementDecorator extends PDOStatementDecorator
     /**
      * @return PDOStatement
      */
-    protected function getPDOStatement()
+    public function getPDOStatement()
     {
         return $this->pdoStatement;
     }

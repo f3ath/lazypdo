@@ -23,9 +23,9 @@ abstract class PDOStatementDecorator extends PDOStatement
     /**
      * @inheritdoc
      */
-    public function execute($bound_input_params = NULL)
+    public function execute($bound_input_params = null)
     {
-        return $this->getPDOStatement()->execute($bound_input_params);
+        return call_user_func_array(array($this->getPDOStatement(), 'execute'), func_get_args());
     }
 
     /**
@@ -33,15 +33,17 @@ abstract class PDOStatementDecorator extends PDOStatement
      */
     public function fetch($fetch_style = null, $cursor_orientation = PDO::FETCH_ORI_NEXT, $cursor_offset = 0)
     {
-        return $this->getPDOStatement()->fetch($fetch_style, $cursor_orientation, $cursor_offset);
+        return call_user_func_array(array($this->getPDOStatement(), 'fetch'), func_get_args());
     }
 
     /**
      * @inheritdoc
      */
-    public function bindParam($parameter, &$variable, $data_type = PDO::PARAM_STR, $length = null, $driver_options = null)
+    public function bindParam($parameter, &$variable, $type = null, $maxlen = null, $driverdata = null)
     {
-        return $this->getPDOStatement()->bindParam($parameter, $variable, $data_type, $length, $driver_options);
+        $args = func_get_args();
+        $args[1] = &$variable;
+        return call_user_func_array(array($this->getPDOStatement(), 'bindParam'), $args);
     }
 
     /**
@@ -49,15 +51,17 @@ abstract class PDOStatementDecorator extends PDOStatement
      */
     public function bindColumn($column, &$param, $type = null, $maxlen = null, $driverdata = null)
     {
-        return $this->getPDOStatement()->bindColumn($column, $param, $type, $maxlen, $driverdata);
+        $args = func_get_args();
+        $args[1] = &$param;
+        return call_user_func_array(array($this->getPDOStatement(), 'bindColumn'), $args);
     }
-
+    
     /**
      * @inheritdoc
      */
     public function bindValue($parameter, $value, $data_type = PDO::PARAM_STR)
     {
-        return $this->getPDOStatement()->bindValue($parameter, $value, $data_type);
+        return call_user_func_array(array($this->getPDOStatement(), 'bindValue'), func_get_args());
     }
 
     /**
@@ -73,7 +77,7 @@ abstract class PDOStatementDecorator extends PDOStatement
      */
     public function fetchColumn($column_number = 0)
     {
-        return $this->getPDOStatement()->fetchColumn($column_number);
+        return call_user_func_array(array($this->getPDOStatement(), 'fetchColumn'), func_get_args());
     }
 
     /**
@@ -81,7 +85,7 @@ abstract class PDOStatementDecorator extends PDOStatement
      */
     public function fetchAll($fetch_style = null, $fetch_argument = null, $ctor_args = null)
     {
-        return $this->getPDOStatement()->fetchAll($fetch_style, $fetch_argument, $ctor_args);
+        return call_user_func_array(array($this->getPDOStatement(), 'fetchAll'), func_get_args());
     }
 
     /**
@@ -89,7 +93,7 @@ abstract class PDOStatementDecorator extends PDOStatement
      */
     public function fetchObject($class_name = "stdClass", $ctor_args = null)
     {
-        return $this->getPDOStatement()->fetchObject($class_name, $ctor_args);
+        return call_user_func_array(array($this->getPDOStatement(), 'fetchObject'), func_get_args());
     }
 
     /**
@@ -145,7 +149,7 @@ abstract class PDOStatementDecorator extends PDOStatement
      */
     public function setFetchMode($mode, $arg2 = null, $arg3 = null)
     {
-        return $this->getPDOStatement()->setFetchMode($mode, $arg2, $arg3);
+        return call_user_func_array(array($this->getPDOStatement(), 'setFetchMode'), func_get_args());
     }
 
     /**
